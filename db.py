@@ -1,16 +1,16 @@
 from pymongo import MongoClient
 import os
 
-# 🔹 Get MongoDB URI from environment
+# 🔹 Get MongoDB URI
 MONGO_URI = os.environ.get("MONGO_URI")
 
 if not MONGO_URI:
     raise Exception("❌ MONGO_URI not set in environment variables")
 
-# 🔹 Create client safely
+# 🔹 Safe MongoDB connection
 try:
     client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-    client.server_info()  # forces connection check
+    client.server_info()  # test connection
 except Exception as e:
     raise Exception(f"❌ MongoDB connection failed: {str(e)}")
 
