@@ -16,11 +16,15 @@ except Exception as e:
 
 
 def insert_data(data):
-    if collection:
+    if collection is not None:
         collection.insert_one(data)
 
 
 def get_all_data():
-    if collection:
-        return list(collection.find({}, {"_id": 0}))
-    return []
+    try:
+        if collection is not None:
+            return list(collection.find({}, {"_id": 0}))
+        return []
+    except Exception as e:
+        print("Fetch Error:", e)
+        return []
