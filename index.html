@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IoT Dashboard</title>
+</head>
+
+<body>
+
+<h1>🌐 IoT Sensor Dashboard</h1>
+
+<h2>Temperature: <span id="temp">Loading...</span></h2>
+<h2>Humidity: <span id="hum">Loading...</span></h2>
+
+<!-- 📊 Graph -->
+<canvas id="chart"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let chart;
+
+async function fetchData() {
+    const res = await fetch("http://127.0.0.1:5000/data");
+    const data = await res.json();
+
+    let latest = data[data.length - 1];
+
+    // Update values
+    document.getElementById("temp").innerText = latest.temperature;
+    document.getElementById("hum").innerText = latest.humidity;
+
+    // Prepare graph data
+    let temps = data.map(d => d.temperature);
+    let hums = data.map(d => d.humidity);
+
+    // Destroy old chart (important)
+    if (chart) chart.destroy();
+
+    // Create chart
+    chart = new Chart(document.getElementById("chart"), {
+        type: "line",
+        data: {
+            labels: temps.map((_, i) => i),
+            datasets: [
+                { label: "Temperature", data: temps },
+                { label: "Humidity", data: hums }
+            ]
+        }
+    });
+}
+
+// Run every 5 sec
+fetchData();
+setInterval(fetchData, 5000);
+</script>
+
+</body>
+</html>
