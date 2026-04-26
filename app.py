@@ -12,7 +12,7 @@ def receive_data():
     try:
         content = request.get_json()
 
-        if not content:
+        if content is None:
             return jsonify({"error": "No data received"}), 400
 
         if "temperature" not in content or "humidity" not in content:
@@ -20,10 +20,16 @@ def receive_data():
 
         insert_data(content)
 
-        return jsonify({"status": "success"}), 200
+        return jsonify({
+            "status": "success",
+            "message": "Data stored successfully"
+        }), 200
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "error": "Server error",
+            "details": str(e)
+        }), 500
 
 
 # 🔹 GET API
@@ -31,18 +37,27 @@ def receive_data():
 def send_data():
     try:
         data = get_all_data()
-        return jsonify(data), 200
+        return jsonify(data if data else []), 200
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "error": "Failed to fetch data",
+            "details": str(e)
+        }), 500
 
 
-# 🔹 Home route
+# 🔹 Health check route (VERY IMPORTANT for Render)
 @app.route('/')
 def home():
-    return jsonify({"status": "IoT Backend Running 🚀"})
+    return jsonify({
+        "status": "running",
+        "message": "IoT Backend is live 🚀"
+    })
 
 
-# 🔹 Run server
+# 🔹 Run server (Render + Local compatible)
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
+
