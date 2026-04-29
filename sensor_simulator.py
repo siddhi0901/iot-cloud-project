@@ -2,7 +2,7 @@ import requests
 import random
 import time
 
-# 🔹 Replace with Render deployed URL
+# ✅ Use your Render URL
 API_URL = "https://iot-cloud-project.onrender.com/data"
 
 print("Sensor Simulator Started...")
